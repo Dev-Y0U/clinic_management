@@ -198,13 +198,13 @@ public:
             cerr << "Error Insert into Patients Table: " << errMsg << endl;
             sqlite3_free(errMsg);
             sqlite3_close(DB);
-            system("pause");
+            //system("pause");
             return -1;
         }
 
         cout << "Patient inserted successfully!\n" << endl;
         sqlite3_close(DB);
-        system("pause");
+        //system("pause");
         return 0;
     }
 
@@ -328,43 +328,43 @@ public:
 
         switch (choice) {
             case 1:
-                system("cls");
+                //system("cls");
                 cout << "Enter new Name: ";
                 getline(cin, name);
                 sql = "UPDATE Patients SET Name = '" + name + "' WHERE PatientID = " + to_string(patientID) + ";";
                 break;
             case 2:
-                system("cls");
+                //system("cls");
                 cout << "Enter new BirthDate (YYYY-MM-DD): ";
                 getline(cin, birthDate);
                 sql = "UPDATE Patients SET BirthDate = '" + birthDate + "' WHERE PatientID = " + to_string(patientID) + ";";
                 break;
             case 3:
-                system("cls");
+                //system("cls");
                 cout << "Enter new Gender (M/F): ";
                 getline(cin, gender);
                 sql = "UPDATE Patients SET Gender = '" + gender + "' WHERE PatientID = " + to_string(patientID) + ";";
                 break;
             case 4:
-                system("cls");
+                //system("cls");
                 cout << "Enter new ContactNumber: ";
                 getline(cin, contactNumber);
                 sql = "UPDATE Patients SET ContactNumber = '" + contactNumber + "' WHERE PatientID = " + to_string(patientID) + ";";
                 break;
             case 5:
-                system("cls");
+                //system("cls");
                 cout << "Enter new Email: ";
                 getline(cin, email);
                 sql = "UPDATE Patients SET Email = '" + email + "' WHERE PatientID = " + to_string(patientID) + ";";
                 break;
             case 6:
-                system("cls");
+                //system("cls");
                 cout << "Enter new Address: ";
                 getline(cin, address);
                 sql = "UPDATE Patients SET Address = '" + address + "' WHERE PatientID = " + to_string(patientID) + ";";
                 break;
             case 7:
-                system("cls");
+                //system("cls");
                 cout << "Enter new Name: ";
                 getline(cin, name);
                 cout << "Enter new BirthDate (YYYY-MM-DD): ";
@@ -409,7 +409,7 @@ public:
         int choice;
         while (true)
         {
-            system("cls");
+            //system("cls");
             cout << "\nPatient Management Menu:\n";
             cout << "-------------------------\n";
             cout << "1. Insert Patient\n\n";
@@ -423,36 +423,36 @@ public:
             switch (choice)
             {
             case 1:
-                system("cls");
+                //system("cls");
                 insertPatient();
                 break;
             case 2:
-                system("cls");
+                //system("cls");
                 printPatients();
                 cout << "\n\n";
-                system("pause");
+                //system("pause");
                 break;
             case 3:
                 int patientID;
-                system("cls");
+                //system("cls");
                 cout << "Enter Patient ID to Delete: ";
                 cin >> patientID;
                 deletePatientData(patientID);
                 cout << "Patient deleted successfully.\n\n";
-                system("pause");
+                //system("pause");
                 break;
             case 4:
-                system("cls");
+                //system("cls");
                 editPatient();
                 cout<<"\n\n";
-                system("pause");
+                //system("pause");
                 break;
             case 0:
-                system("cls");
+                //system("cls");
                 return;
             default:
                 cout << "Invalid choice. Press Enter and try again.\n\n";
-                system("pause");
+                //system("pause");
                 break;
             }
         }
@@ -514,13 +514,13 @@ public:
             cerr << "Error Insert into Doctors Table: " << errMsg << endl;
             sqlite3_free(errMsg);
             sqlite3_close(DB);
-            system("pause");
+            //system("pause");
             return -1;
         }
 
         cout << "Doctors inserted successfully!\n" << endl;
         sqlite3_close(DB);
-        system("pause");
+        //system("pause");
         return 0;
     }
 
@@ -645,49 +645,49 @@ public:
 
         switch (choice) {
             case 1:
-                system("cls");
+                //system("cls");
                 cout << "Enter new Name: ";
                 getline(cin, name);
                 sql = "UPDATE Doctors SET Name = '" + name + "' WHERE DoctorID = " + to_string(DoctorsID) + ";";
                 break;
             case 2:
-                system("cls");
+                //system("cls");
                 cout << "Enter new BirthDate (YYYY-MM-DD): ";
                 getline(cin, birthDate);
                 sql = "UPDATE Doctors SET BirthDate = '" + birthDate + "' WHERE DoctorID = " + to_string(DoctorsID) + ";";
                 break;
             case 3:
-                system("cls");
+                //system("cls");
                 cout << "Enter new Gender (M/F): ";
                 getline(cin, gender);
                 sql = "UPDATE Doctors SET Gender = '" + gender + "' WHERE DoctorID = " + to_string(DoctorsID) + ";";
                 break;
             case 4:
-                system("cls");
+                //system("cls");
                 cout << "Enter new Specialization: ";
                 getline(cin, gender);
                 sql = "UPDATE Doctors SET Specialization = '" + Specialization + "' WHERE DoctorID = " + to_string(DoctorsID) + ";";
                 break;
             case 5:
-                system("cls");
+                //system("cls");
                 cout << "Enter new ContactNumber: ";
                 getline(cin, contactNumber);
                 sql = "UPDATE Doctors SET ContactNumber = '" + contactNumber + "' WHERE DoctorID = " + to_string(DoctorsID) + ";";
                 break;
             case 6:
-                system("cls");
+                //system("cls");
                 cout << "Enter new Email: ";
                 getline(cin, email);
                 sql = "UPDATE Doctors SET Email = '" + email + "' WHERE DoctorID = " + to_string(DoctorsID) + ";";
                 break;
             case 7:
-                system("cls");
+                //system("cls");
                 cout << "Enter new Address: ";
                 getline(cin, address);
                 sql = "UPDATE Doctors SET Address = '" + address + "' WHERE DoctorID = " + to_string(DoctorsID) + ";";
                 break;
             case 8:
-                system("cls");
+                //system("cls");
                 cout << "Enter new Name: ";
                 getline(cin, name);
                 cout << "Enter new BirthDate (YYYY-MM-DD): ";
@@ -733,7 +733,7 @@ public:
         int choice;
         while (true)
         {
-            system("cls");
+            //system("cls");
             cout << "\nDoctors Management Menu:\n";
             cout << "-------------------------\n";
             cout << "1. Insert Doctor\n\n";
@@ -747,36 +747,36 @@ public:
             switch (choice)
             {
             case 1:
-                system("cls");
+                //system("cls");
                 insertDoctors();
                 break;
             case 2:
-                system("cls");
+                //system("cls");
                 printDoctors();
                 cout << "\n\n";
-                system("pause");
+                //system("pause");
                 break;
             case 3:
                 int DoctorsID;
-                system("cls");
+                //system("cls");
                 cout << "Enter Doctors ID to Delete: ";
                 cin >> DoctorsID;
                 deleteDoctorsData(DoctorsID);
                 cout << "Doctors deleted successfully.\n\n";
-                system("pause");
+                //system("pause");
                 break;
             case 4:
-                system("cls");
+                //system("cls");
                 editdoctor();
                 cout<<"\n\n";
-                system("pause");
+                //system("pause");
                 break;
             case 0:
-                system("cls");
+                //system("cls");
                 return;
             default:
                 cout << "Invalid choice. Press Enter and try again.\n\n";
-                system("pause");
+                //system("pause");
                 break;
             }
         }
@@ -805,7 +805,7 @@ void handle(){
     doctor d;
     while (true)
     {
-        system("cls");
+        //system("cls");
         menu();
         cin >> choice;
 
@@ -822,7 +822,7 @@ void handle(){
             return;
         default:
             cout << "Invalid choice. Press Enter and try again.\n\n";
-            system("pause");
+            //system("pause");
             break;
         }
     }
