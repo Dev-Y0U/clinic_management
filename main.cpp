@@ -1,3 +1,4 @@
+// Hi yosef
 #include <iostream>
 #include "sqlite3.h"
 #include <cstdlib>
@@ -5,24 +6,29 @@
 using namespace std;
 
 sqlite3 *DB;
-class connection {
+class connection
+{
 private:
     int response = sqlite3_open("hospital.db", &DB);
 
 public:
-    int connect(){
-        if (response) {
+    int connect()
+    {
+        if (response)
+        {
             cout << "Error open DB " << sqlite3_errmsg(DB) << endl;
         }
         return response;
     }
 
-    void disoncect(){
+    void disoncect()
+    {
         sqlite3_close(DB);
     }
 };
 
-class createtion {
+class createtion
+{
 private:
     char *errMsg = 0;
     string sql;
@@ -30,7 +36,8 @@ private:
     int response = db.connect();
 
 public:
-    void createDb() {
+    void createDb()
+    {
 
         sql = "CREATE TABLE IF NOT EXISTS Patients ("
               "PatientID INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -141,7 +148,8 @@ public:
     }
 };
 
-class print {
+class print
+{
 public:
     static int callback(void *NotUsed, int argc, char **argv, char **azColName)
     {
@@ -193,7 +201,8 @@ public:
         getline(cin, address);
 
         string sql = "INSERT INTO Patients (Name, BirthDate, Gender, ContactNumber, Email, Address) "
-                     "VALUES ('" + name + "', '" + birthDate + "', '" + gender + "', '" +
+                     "VALUES ('" +
+                     name + "', '" + birthDate + "', '" + gender + "', '" +
                      contactNumber + "', '" + email + "', '" + address + "');";
 
         exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &errMsg);
@@ -202,14 +211,14 @@ public:
             cerr << "Error Insert into Patients Table: " << errMsg << endl;
             sqlite3_free(errMsg);
             sqlite3_close(DB);
-            //system("pause");
+            // system("pause");
             return -1;
         }
 
         cout << "Patient inserted successfully!\n"
              << endl;
         sqlite3_close(DB);
-        //system("pause");
+        // system("pause");
         return 0;
     }
 
@@ -296,12 +305,14 @@ public:
         return 0;
     }
 
-    int editPatient() {
-        sqlite3* DB;
-        char* errMsg = 0;
+    int editPatient()
+    {
+        sqlite3 *DB;
+        char *errMsg = 0;
         int exit = sqlite3_open("hospital.db", &DB);
 
-        if (exit) {
+        if (exit)
+        {
             cerr << "Error open DB " << sqlite3_errmsg(DB) << endl;
             return -1;
         }
@@ -329,7 +340,8 @@ public:
 
         string sql;
 
-        switch (choice) {
+        switch (choice)
+        {
         case 1:
             // system("cls");
             cout << "Enter new Name: ";
