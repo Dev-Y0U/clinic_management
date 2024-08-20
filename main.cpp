@@ -1,3 +1,4 @@
+// Hi yosef
 #include <iostream>
 #include "sqlite3.h"
 #include <cstdlib>
@@ -225,14 +226,20 @@ public:
             cerr << "Error Insert into Patients Table: " << errMsg << endl;
             sqlite3_free(errMsg);
             sqlite3_close(DB);
-            pauseProgram();
+          pauseProgram();
+
+            // system("pause");
+
             return -1;
         }
 
         cout << "Patient inserted successfully!\n"
              << endl;
         sqlite3_close(DB);
-        pauseProgram();
+       pauseProgram();
+
+        // system("pause");
+
         return 0;
     }
 
