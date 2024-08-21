@@ -1,23 +1,25 @@
 #include <iostream>
 #include "sqlite3.h"
 #include <cstdlib>
+#include <windows.h>
 
 using namespace std;
 
-void clearScreen() {
+void clearScreen()
+{
     system(
-        #ifdef _WIN32
-            "cls"
-        #else
-            "clear"
-        #endif
+    #ifdef _WIN32
+        "cls"
+    #else
+        "clear"
+    #endif
     );
 }
 
-void pauseProgram() {
+void pauseProgram()
+{
     cin.ignore(1, '\n').get();
 }
-
 
 sqlite3 *DB;
 class connection
@@ -864,7 +866,7 @@ void handle()
             return;
         default:
             cout << "Invalid choice. Press Enter and try again.\n\n";
-             pauseProgram();
+            pauseProgram();
             break;
         }
     }
