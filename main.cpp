@@ -1,4 +1,4 @@
-// Hi yosef
+// Hi yosef w
 #include <iostream>
 #include "sqlite3.h"
 #include <cstdlib>
