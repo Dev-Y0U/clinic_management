@@ -16,6 +16,7 @@ void clearScreen() {
 }
 
 void pauseProgram() {
+    cout<<"press any key to continue...";
     cin.ignore(1, '\n').get();
 }
 
@@ -46,7 +47,7 @@ class createtion
 {
 private:
     char *errMsg = 0;
-    string sql;
+    string query;
     connection db;
     int response = db.connect();
 
@@ -54,7 +55,7 @@ public:
     void createDb()
     {
 
-        sql = "CREATE TABLE IF NOT EXISTS Patients ("
+        query = "CREATE TABLE IF NOT EXISTS Patients ("
               "PatientID INTEGER PRIMARY KEY AUTOINCREMENT, "
               "Name VARCHAR(255) NOT NULL, "
               "BirthDate DATE NOT NULL, "
@@ -63,14 +64,14 @@ public:
               "Email VARCHAR(255), "
               "Address TEXT);";
 
-        response = sqlite3_exec(DB, sql.c_str(), NULL, 0, &errMsg);
+        response = sqlite3_exec(DB, query.c_str(), NULL, 0, &errMsg);
         if (response != SQLITE_OK)
         {
             cerr << "Error Create Patients Table: " << errMsg << endl;
             sqlite3_free(errMsg);
         }
 
-        sql = "CREATE TABLE IF NOT EXISTS Doctors ("
+        query = "CREATE TABLE IF NOT EXISTS Doctors ("
               "DoctorID INTEGER PRIMARY KEY AUTOINCREMENT, "
               "Name VARCHAR(255) NOT NULL, "
               "BirthDate DATE NOT NULL, "
@@ -80,14 +81,14 @@ public:
               "Email VARCHAR(255), "
               "Address TEXT);";
 
-        response = sqlite3_exec(DB, sql.c_str(), NULL, 0, &errMsg);
+        response = sqlite3_exec(DB, query.c_str(), NULL, 0, &errMsg);
         if (response != SQLITE_OK)
         {
             cerr << "Error Create Doctors Table: " << errMsg << endl;
             sqlite3_free(errMsg);
         }
 
-        sql = "CREATE TABLE IF NOT EXISTS Appointments ("
+        query = "CREATE TABLE IF NOT EXISTS Appointments ("
               "AppointmentID INTEGER PRIMARY KEY AUTOINCREMENT, "
               "PatientID INT NOT NULL, "
               "DoctorID INT NOT NULL, "
@@ -99,14 +100,14 @@ public:
               "FOREIGN KEY(PatientID) REFERENCES Patients(PatientID), "
               "FOREIGN KEY(DoctorID) REFERENCES Doctors(DoctorID));";
 
-        response = sqlite3_exec(DB, sql.c_str(), NULL, 0, &errMsg);
+        response = sqlite3_exec(DB, query.c_str(), NULL, 0, &errMsg);
         if (response != SQLITE_OK)
         {
             cerr << "Error Create Appointments Table: " << errMsg << endl;
             sqlite3_free(errMsg);
         }
 
-        sql = "CREATE TABLE IF NOT EXISTS MedicalRecords ("
+        query = "CREATE TABLE IF NOT EXISTS MedicalRecords ("
               "RecordID INTEGER PRIMARY KEY AUTOINCREMENT, "
               "PatientID INT NOT NULL, "
               "AppointmentID INT NOT NULL, "
@@ -116,14 +117,14 @@ public:
               "FOREIGN KEY(PatientID) REFERENCES Patients(PatientID), "
               "FOREIGN KEY(AppointmentID) REFERENCES Appointments(AppointmentID));";
 
-        response = sqlite3_exec(DB, sql.c_str(), NULL, 0, &errMsg);
+        response = sqlite3_exec(DB, query.c_str(), NULL, 0, &errMsg);
         if (response != SQLITE_OK)
         {
             cerr << "Error Create MedicalRecords Table: " << errMsg << endl;
             sqlite3_free(errMsg);
         }
 
-        sql = "CREATE TABLE IF NOT EXISTS Prescriptions ("
+        query = "CREATE TABLE IF NOT EXISTS Prescriptions ("
               "PrescriptionID INTEGER PRIMARY KEY AUTOINCREMENT, "
               "RecordID INT NOT NULL, "
               "DrugName VARCHAR(255) NOT NULL, "
@@ -134,14 +135,14 @@ public:
               "SpecialInstructions TEXT, "
               "FOREIGN KEY(RecordID) REFERENCES MedicalRecords(RecordID));";
 
-        response = sqlite3_exec(DB, sql.c_str(), NULL, 0, &errMsg);
+        response = sqlite3_exec(DB, query.c_str(), NULL, 0, &errMsg);
         if (response != SQLITE_OK)
         {
             cerr << "Error Create Prescriptions Table: " << errMsg << endl;
             sqlite3_free(errMsg);
         }
 
-        sql = "CREATE TABLE IF NOT EXISTS Payments ("
+        query = "CREATE TABLE IF NOT EXISTS Payments ("
               "PaymentID INTEGER PRIMARY KEY AUTOINCREMENT, "
               "PatientID INT NOT NULL, "
               "AppointmentID INT NOT NULL, "
@@ -152,7 +153,7 @@ public:
               "FOREIGN KEY(PatientID) REFERENCES Patients(PatientID), "
               "FOREIGN KEY(AppointmentID) REFERENCES Appointments(AppointmentID));";
 
-        response = sqlite3_exec(DB, sql.c_str(), NULL, 0, &errMsg);
+        response = sqlite3_exec(DB, query.c_str(), NULL, 0, &errMsg);
         if (response != SQLITE_OK)
         {
             cerr << "Error Create Payments Table: " << errMsg << endl;
@@ -185,9 +186,9 @@ public:
     {
         sqlite3 *DB;
         char *errMsg = 0;
-        int exit = sqlite3_open("hospital.db", &DB);
+        int response = sqlite3_open("hospital.db", &DB);
 
-        if (exit)
+        if (response)
         {
             cerr << "Error open DB " << sqlite3_errmsg(DB) << endl;
             return -1;
@@ -215,13 +216,13 @@ public:
         cout << "Enter Address: ";
         getline(cin, address);
 
-        string sql = "INSERT INTO Patients (Name, BirthDate, Gender, ContactNumber, Email, Address) "
+        string query = "INSERT INTO Patients (Name, BirthDate, Gender, ContactNumber, Email, Address) "
                      "VALUES ('" +
                      name + "', '" + birthDate + "', '" + gender + "', '" +
                      contactNumber + "', '" + email + "', '" + address + "');";
 
-        exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &errMsg);
-        if (exit != SQLITE_OK)
+        response = sqlite3_exec(DB, query.c_str(), NULL, 0, &errMsg);
+        if (response != SQLITE_OK)
         {
             cerr << "Error Insert into Patients Table: " << errMsg << endl;
             sqlite3_free(errMsg);
@@ -247,18 +248,18 @@ public:
     {
         sqlite3 *DB;
         char *errMsg = 0;
-        int exit = sqlite3_open("hospital.db", &DB);
+        int response = sqlite3_open("hospital.db", &DB);
 
-        if (exit)
+        if (response)
         {
             cerr << "Error open DB " << sqlite3_errmsg(DB) << endl;
             return -1;
         }
 
-        string sql = "SELECT * FROM Patients;";
+        string query = "SELECT * FROM Patients;";
 
-        exit = sqlite3_exec(DB, sql.c_str(), print::callback, 0, &errMsg);
-        if (exit != SQLITE_OK)
+        response = sqlite3_exec(DB, query.c_str(), print::callback, 0, &errMsg);
+        if (response != SQLITE_OK)
         {
             cerr << "Error Select Patients Table: " << errMsg << endl;
             sqlite3_free(errMsg);
@@ -274,17 +275,17 @@ public:
     {
         sqlite3 *DB;
         char *errMsg = 0;
-        int exit = sqlite3_open("hospital.db", &DB);
+        int response = sqlite3_open("hospital.db", &DB);
 
-        if (exit)
+        if (response)
         {
             cerr << "Error open DB " << sqlite3_errmsg(DB) << endl;
             return -1;
         }
 
-        string sql = "DELETE FROM Payments WHERE PatientID = " + to_string(patientID) + ";";
-        exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &errMsg);
-        if (exit != SQLITE_OK)
+        string query = "DELETE FROM Payments WHERE PatientID = " + to_string(patientID) + ";";
+        response = sqlite3_exec(DB, query.c_str(), NULL, 0, &errMsg);
+        if (response != SQLITE_OK)
         {
             cerr << "Error Delete from Payments Table: " << errMsg << endl;
             sqlite3_free(errMsg);
@@ -292,9 +293,9 @@ public:
             return -1;
         }
 
-        sql = "DELETE FROM MedicalRecords WHERE PatientID = " + to_string(patientID) + ";";
-        exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &errMsg);
-        if (exit != SQLITE_OK)
+        query = "DELETE FROM MedicalRecords WHERE PatientID = " + to_string(patientID) + ";";
+        response = sqlite3_exec(DB, query.c_str(), NULL, 0, &errMsg);
+        if (response != SQLITE_OK)
         {
             cerr << "Error Delete from MedicalRecords Table: " << errMsg << endl;
             sqlite3_free(errMsg);
@@ -302,9 +303,9 @@ public:
             return -1;
         }
 
-        sql = "DELETE FROM Appointments WHERE PatientID = " + to_string(patientID) + ";";
-        exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &errMsg);
-        if (exit != SQLITE_OK)
+        query = "DELETE FROM Appointments WHERE PatientID = " + to_string(patientID) + ";";
+        response = sqlite3_exec(DB, query.c_str(), NULL, 0, &errMsg);
+        if (response != SQLITE_OK)
         {
             cerr << "Error Delete from Appointments Table: " << errMsg << endl;
             sqlite3_free(errMsg);
@@ -312,9 +313,9 @@ public:
             return -1;
         }
 
-        sql = "DELETE FROM Patients WHERE PatientID = " + to_string(patientID) + ";";
-        exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &errMsg);
-        if (exit != SQLITE_OK)
+        query = "DELETE FROM Patients WHERE PatientID = " + to_string(patientID) + ";";
+        response = sqlite3_exec(DB, query.c_str(), NULL, 0, &errMsg);
+        if (response != SQLITE_OK)
         {
             cerr << "Error Delete from Patients Table: " << errMsg << endl;
             sqlite3_free(errMsg);
@@ -330,9 +331,9 @@ public:
     {
         sqlite3 *DB;
         char *errMsg = 0;
-        int exit = sqlite3_open("hospital.db", &DB);
+        int response = sqlite3_open("hospital.db", &DB);
 
-        if (exit)
+        if (response)
         {
             cerr << "Error open DB " << sqlite3_errmsg(DB) << endl;
             return -1;
@@ -359,7 +360,7 @@ public:
         cin >> choice;
         cin.ignore();
 
-        string sql;
+        string query;
 
         switch (choice)
         {
@@ -367,37 +368,37 @@ public:
             clearScreen();
             cout << "Enter new Name: ";
             getline(cin, name);
-            sql = "UPDATE Patients SET Name = '" + name + "' WHERE PatientID = " + to_string(patientID) + ";";
+            query = "UPDATE Patients SET Name = '" + name + "' WHERE PatientID = " + to_string(patientID) + ";";
             break;
         case 2:
             clearScreen();
             cout << "Enter new BirthDate (YYYY-MM-DD): ";
             getline(cin, birthDate);
-            sql = "UPDATE Patients SET BirthDate = '" + birthDate + "' WHERE PatientID = " + to_string(patientID) + ";";
+            query = "UPDATE Patients SET BirthDate = '" + birthDate + "' WHERE PatientID = " + to_string(patientID) + ";";
             break;
         case 3:
             clearScreen();
             cout << "Enter new Gender (M/F): ";
             getline(cin, gender);
-            sql = "UPDATE Patients SET Gender = '" + gender + "' WHERE PatientID = " + to_string(patientID) + ";";
+            query = "UPDATE Patients SET Gender = '" + gender + "' WHERE PatientID = " + to_string(patientID) + ";";
             break;
         case 4:
             clearScreen();
             cout << "Enter new ContactNumber: ";
             getline(cin, contactNumber);
-            sql = "UPDATE Patients SET ContactNumber = '" + contactNumber + "' WHERE PatientID = " + to_string(patientID) + ";";
+            query = "UPDATE Patients SET ContactNumber = '" + contactNumber + "' WHERE PatientID = " + to_string(patientID) + ";";
             break;
         case 5:
             clearScreen();
             cout << "Enter new Email: ";
             getline(cin, email);
-            sql = "UPDATE Patients SET Email = '" + email + "' WHERE PatientID = " + to_string(patientID) + ";";
+            query = "UPDATE Patients SET Email = '" + email + "' WHERE PatientID = " + to_string(patientID) + ";";
             break;
         case 6:
             clearScreen();
             cout << "Enter new Address: ";
             getline(cin, address);
-            sql = "UPDATE Patients SET Address = '" + address + "' WHERE PatientID = " + to_string(patientID) + ";";
+            query = "UPDATE Patients SET Address = '" + address + "' WHERE PatientID = " + to_string(patientID) + ";";
             break;
         case 7:
             clearScreen();
@@ -413,7 +414,7 @@ public:
             getline(cin, email);
             cout << "Enter new Address: ";
             getline(cin, address);
-            sql = "UPDATE Patients SET Name = '" + name + "' WHERE PatientID = " + to_string(patientID) + ";"
+            query = "UPDATE Patients SET Name = '" + name + "' WHERE PatientID = " + to_string(patientID) + ";"
                                                                                                           "UPDATE Patients SET BirthDate = '" +
                   birthDate + "' WHERE PatientID = " + to_string(patientID) + ";"
                                                                               "UPDATE Patients SET Gender = '" +
@@ -431,8 +432,8 @@ public:
             return -1;
         }
 
-        exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &errMsg);
-        if (exit != SQLITE_OK)
+        response = sqlite3_exec(DB, query.c_str(), NULL, 0, &errMsg);
+        if (response != SQLITE_OK)
         {
             cerr << "Error updating patient data: " << errMsg << endl;
             sqlite3_free(errMsg);
@@ -507,9 +508,9 @@ public:
     {
         sqlite3 *DB;
         char *errMsg = 0;
-        int exit = sqlite3_open("hospital.db", &DB);
+        int response = sqlite3_open("hospital.db", &DB);
 
-        if (exit)
+        if (response)
         {
             cerr << "Error open DB " << sqlite3_errmsg(DB) << endl;
             return -1;
@@ -540,7 +541,7 @@ public:
         cout << "Enter Address: ";
         getline(cin, address);
 
-        string sql = "INSERT INTO Doctors (Name, BirthDate, Gender, Specialization, ContactNumber, Email, Address) "
+        string query = "INSERT INTO Doctors (Name, BirthDate, Gender, Specialization, ContactNumber, Email, Address) "
                      "VALUES ('" +
                      name + "' , '" +
                      birthDate + "' , '" +
@@ -550,8 +551,8 @@ public:
                      email + "' , '" +
                      address + "');";
 
-        exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &errMsg);
-        if (exit != SQLITE_OK)
+        response = sqlite3_exec(DB, query.c_str(), NULL, 0, &errMsg);
+        if (response != SQLITE_OK)
         {
             cerr << "Error Insert into Doctors Table: " << errMsg << endl;
             sqlite3_free(errMsg);
@@ -571,18 +572,18 @@ public:
     {
         sqlite3 *DB;
         char *errMsg = 0;
-        int exit = sqlite3_open("hospital.db", &DB);
+        int response = sqlite3_open("hospital.db", &DB);
 
-        if (exit)
+        if (response)
         {
             cerr << "Error open DB " << sqlite3_errmsg(DB) << endl;
             return -1;
         }
 
-        string sql = "SELECT * FROM Doctors;";
+        string query = "SELECT * FROM Doctors;";
 
-        exit = sqlite3_exec(DB, sql.c_str(), print::callback, 0, &errMsg);
-        if (exit != SQLITE_OK)
+        response = sqlite3_exec(DB, query.c_str(), print::callback, 0, &errMsg);
+        if (response != SQLITE_OK)
         {
             cerr << "Error Select Doctors Table: " << errMsg << endl;
             sqlite3_free(errMsg);
@@ -598,17 +599,17 @@ public:
     {
         sqlite3 *DB;
         char *errMsg = 0;
-        int exit = sqlite3_open("hospital.db", &DB);
+        int response = sqlite3_open("hospital.db", &DB);
 
-        if (exit)
+        if (response)
         {
             cerr << "Error open DB " << sqlite3_errmsg(DB) << endl;
             return -1;
         }
 
-        string sql = "DELETE FROM Doctors WHERE DoctorsID = " + to_string(DoctorsID) + ";";
-        exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &errMsg);
-        if (exit != SQLITE_OK)
+        string query = "DELETE FROM Doctors WHERE DoctorsID = " + to_string(DoctorsID) + ";";
+        response = sqlite3_exec(DB, query.c_str(), NULL, 0, &errMsg);
+        if (response != SQLITE_OK)
         {
             cerr << "Error Delete from Doctors Table: " << errMsg << endl;
             sqlite3_free(errMsg);
@@ -616,9 +617,9 @@ public:
             return -1;
         }
 
-        sql = "DELETE FROM MedicalRecords WHERE DoctorsID = " + to_string(DoctorsID) + ";";
-        exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &errMsg);
-        if (exit != SQLITE_OK)
+        query = "DELETE FROM MedicalRecords WHERE DoctorsID = " + to_string(DoctorsID) + ";";
+        response = sqlite3_exec(DB, query.c_str(), NULL, 0, &errMsg);
+        if (response != SQLITE_OK)
         {
             cerr << "Error Delete from MedicalRecords Table: " << errMsg << endl;
             sqlite3_free(errMsg);
@@ -626,9 +627,9 @@ public:
             return -1;
         }
 
-        sql = "DELETE FROM Appointments WHERE DoctorsID = " + to_string(DoctorsID) + ";";
-        exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &errMsg);
-        if (exit != SQLITE_OK)
+        query = "DELETE FROM Appointments WHERE DoctorsID = " + to_string(DoctorsID) + ";";
+        response = sqlite3_exec(DB, query.c_str(), NULL, 0, &errMsg);
+        if (response != SQLITE_OK)
         {
             cerr << "Error Delete from Appointments Table: " << errMsg << endl;
             sqlite3_free(errMsg);
@@ -636,9 +637,9 @@ public:
             return -1;
         }
 
-        sql = "DELETE FROM Doctors WHERE DoctorsID = " + to_string(DoctorsID) + ";";
-        exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &errMsg);
-        if (exit != SQLITE_OK)
+        query = "DELETE FROM Doctors WHERE DoctorsID = " + to_string(DoctorsID) + ";";
+        response = sqlite3_exec(DB, query.c_str(), NULL, 0, &errMsg);
+        if (response != SQLITE_OK)
         {
             cerr << "Error Delete from Doctors Table: " << errMsg << endl;
             sqlite3_free(errMsg);
@@ -654,9 +655,9 @@ public:
     {
         sqlite3 *DB;
         char *errMsg = 0;
-        int exit = sqlite3_open("hospital.db", &DB);
+        int response = sqlite3_open("hospital.db", &DB);
 
-        if (exit)
+        if (response)
         {
             cerr << "Error open DB " << sqlite3_errmsg(DB) << endl;
             return -1;
@@ -684,7 +685,7 @@ public:
         cin >> choice;
         cin.ignore();
 
-        string sql;
+        string query;
 
         switch (choice)
         {
@@ -692,43 +693,43 @@ public:
             clearScreen();
             cout << "Enter new Name: ";
             getline(cin, name);
-            sql = "UPDATE Doctors SET Name = '" + name + "' WHERE DoctorID = " + to_string(DoctorsID) + ";";
+            query = "UPDATE Doctors SET Name = '" + name + "' WHERE DoctorID = " + to_string(DoctorsID) + ";";
             break;
         case 2:
             clearScreen();
             cout << "Enter new BirthDate (YYYY-MM-DD): ";
             getline(cin, birthDate);
-            sql = "UPDATE Doctors SET BirthDate = '" + birthDate + "' WHERE DoctorID = " + to_string(DoctorsID) + ";";
+            query = "UPDATE Doctors SET BirthDate = '" + birthDate + "' WHERE DoctorID = " + to_string(DoctorsID) + ";";
             break;
         case 3:
             clearScreen();
             cout << "Enter new Gender (M/F): ";
             getline(cin, gender);
-            sql = "UPDATE Doctors SET Gender = '" + gender + "' WHERE DoctorID = " + to_string(DoctorsID) + ";";
+            query = "UPDATE Doctors SET Gender = '" + gender + "' WHERE DoctorID = " + to_string(DoctorsID) + ";";
             break;
         case 4:
             clearScreen();
             cout << "Enter new Specialization: ";
             getline(cin, gender);
-            sql = "UPDATE Doctors SET Specialization = '" + Specialization + "' WHERE DoctorID = " + to_string(DoctorsID) + ";";
+            query = "UPDATE Doctors SET Specialization = '" + Specialization + "' WHERE DoctorID = " + to_string(DoctorsID) + ";";
             break;
         case 5:
             clearScreen();
             cout << "Enter new ContactNumber: ";
             getline(cin, contactNumber);
-            sql = "UPDATE Doctors SET ContactNumber = '" + contactNumber + "' WHERE DoctorID = " + to_string(DoctorsID) + ";";
+            query = "UPDATE Doctors SET ContactNumber = '" + contactNumber + "' WHERE DoctorID = " + to_string(DoctorsID) + ";";
             break;
         case 6:
             clearScreen();
             cout << "Enter new Email: ";
             getline(cin, email);
-            sql = "UPDATE Doctors SET Email = '" + email + "' WHERE DoctorID = " + to_string(DoctorsID) + ";";
+            query = "UPDATE Doctors SET Email = '" + email + "' WHERE DoctorID = " + to_string(DoctorsID) + ";";
             break;
         case 7:
             clearScreen();
             cout << "Enter new Address: ";
             getline(cin, address);
-            sql = "UPDATE Doctors SET Address = '" + address + "' WHERE DoctorID = " + to_string(DoctorsID) + ";";
+            query = "UPDATE Doctors SET Address = '" + address + "' WHERE DoctorID = " + to_string(DoctorsID) + ";";
             break;
         case 8:
             clearScreen();
@@ -744,7 +745,7 @@ public:
             getline(cin, email);
             cout << "Enter new Address: ";
             getline(cin, address);
-            sql = "UPDATE Doctors SET Name = '" + name + "' WHERE DoctorID = " + to_string(DoctorsID) + ";"
+            query = "UPDATE Doctors SET Name = '" + name + "' WHERE DoctorID = " + to_string(DoctorsID) + ";"
                                                                                                         "UPDATE Doctors SET BirthDate = '" +
                   birthDate + "' WHERE DoctorID = " + to_string(DoctorsID) + ";"
                                                                              "UPDATE Doctors SET Gender = '" +
@@ -764,8 +765,8 @@ public:
             return -1;
         }
 
-        exit = sqlite3_exec(DB, sql.c_str(), NULL, 0, &errMsg);
-        if (exit != SQLITE_OK)
+        response = sqlite3_exec(DB, query.c_str(), NULL, 0, &errMsg);
+        if (response != SQLITE_OK)
         {
             cerr << "Error updating Doctor data: " << errMsg << endl;
             sqlite3_free(errMsg);
@@ -833,7 +834,7 @@ public:
     }
 };
 
-void menu()
+void main_menu()
 {
     cout << "\nHospital Management System\n";
     cout << "-----------------------------\n";
