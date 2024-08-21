@@ -1,4 +1,4 @@
-// thes a new
+// thes a new2
 #include <iostream>
 #include "sqlite3.h"
 #include <cstdlib>
