@@ -1,4 +1,3 @@
-// amr odhymi
 #include <iostream>
 #include "sqlite3.h"
 #include <cstdlib>
@@ -65,7 +64,7 @@ public:
     void createDb()
     {
            for (auto& entry : tableQueries) {
-           
+
 
         response = sqlite3_exec(DB, entry.second.c_str(), NULL, 0, &errMsg);
         if (response != SQLITE_OK)
@@ -142,9 +141,6 @@ public:
             cerr << "Error Insert into Patients Table: " << errMsg << endl;
             sqlite3_free(errMsg);
             sqlite3_close(DB);
-          pauseProgram();
-
-            // system("pause");
 
             return -1;
         }
@@ -152,10 +148,7 @@ public:
         cout << "Patient inserted successfully!\n"
              << endl;
         sqlite3_close(DB);
-       pauseProgram();
-
-        // system("pause");
-
+        pauseProgram();
         return 0;
     }
 
@@ -749,6 +742,169 @@ public:
     }
 };
 
+
+
+class appointments
+{
+public:
+    int insertAppointments(){
+        sqlite3 *DB;
+        char *errMsg = 0;
+        int response = sqlite3_open("hospital.db", &DB);
+
+        if (response)
+        {
+            cerr << "Error open DB " << sqlite3_errmsg(DB) << endl;
+            return -1;
+        }
+
+        string PatientID, DoctorID, AppointmentDate, Status, Notes;
+
+        cin.ignore();
+
+        cout << "Enter PatientID: ";
+        getline(cin, PatientID);
+
+        cout << "Enter DoctorID: ";
+        getline(cin, DoctorID);
+
+        cout << "Enter Appointment Date (YYYY-MM-DD): ";
+        getline(cin, AppointmentDate);
+
+        cout << "Enter Status: ";
+        getline(cin, Status);
+/*
+        cout << "Enter Cancellation Reason: ";
+        getline(cin, CancellationReason);
+
+        cout << "Enter Rescheduled Date (YYYY-MM-DD): ";
+        getline(cin, RescheduledDate);
+*/
+        cout << "Enter Notes: ";
+        getline(cin, Notes);
+
+        string query = "INSERT INTO Appointments (PatientID, DoctorID, AppointmentDate, Status, Notes) "
+                     "VALUES ('" +
+                     PatientID + "', '" + DoctorID + "', '" + AppointmentDate + "', '" +
+                     Status + "', '" + Notes + "');";
+
+        response = sqlite3_exec(DB, query.c_str(), NULL, 0, &errMsg);
+        if (response != SQLITE_OK)
+        {
+            cerr << "Error Insert into Appointments Table: " << errMsg << endl;
+            sqlite3_free(errMsg);
+            sqlite3_close(DB);
+            pauseProgram();
+            return -1;
+        }
+
+        cout << "Appointment inserted successfully!\n"
+             << endl;
+        sqlite3_close(DB);
+        pauseProgram();
+        return 0;
+    }
+
+    int printAppointments(){
+        sqlite3 *DB;
+        char *errMsg = 0;
+        int response = sqlite3_open("hospital.db", &DB);
+
+        if (response)
+        {
+            cerr << "Error open DB " << sqlite3_errmsg(DB) << endl;
+            return -1;
+        }
+
+        string query = "SELECT * FROM Appointments;";
+
+        response = sqlite3_exec(DB, query.c_str(), print::callback, 0, &errMsg);
+        if (response != SQLITE_OK)
+        {
+            cerr << "Error Select Appointments Table: " << errMsg << endl;
+            sqlite3_free(errMsg);
+            sqlite3_close(DB);
+            return -1;
+        }
+
+        sqlite3_close(DB);
+        return 0;
+    }
+/*
+    int deleteAppointmentsData(AppointmentsID){
+
+    }
+*/
+    int editAppointments(){
+
+    }
+
+    void displayAppointmentsOperations()
+    {
+        int choice;
+        while (true)
+        {
+            clearScreen();
+            cout << "\nAppointments Management Menu:\n";
+            cout << "----------------------------\n";
+            cout << "1. Insert Appointments\n\n";
+            cout << "2. Print Appointments\n\n";
+            cout << "3. Delete Appointments\n\n";
+            cout << "4. Update Appointments\n\n";
+            cout << "0. Return to Main Menu\n\n";
+            cout << "Enter Your Choice: ";
+            cin >> choice;
+
+            switch (choice)
+            {
+            case 1:
+                clearScreen();
+                insertAppointments();
+                break;
+            case 2:
+                clearScreen();
+                printAppointments();
+                cout << "\n\n";
+                pauseProgram();
+                break;
+            case 3:
+                int AppointmentsID;
+                clearScreen();
+                cout << "Enter Appointments ID to Delete: ";
+                cin >> AppointmentsID;
+                //deleteAppointmentsData(AppointmentsID);
+                cout << "Appointment deleted successfully.\n\n";
+                pauseProgram();
+                break;
+            case 4:
+                clearScreen();
+                editAppointments();
+                cout << "\n\n";
+                pauseProgram();
+                break;
+            case 0:
+                clearScreen();
+                return;
+            default:
+                cout << "Invalid choice. Press Enter and try again.\n\n";
+                pauseProgram();
+                break;
+            }
+        }
+    }
+
+};
+
+
+
+
+
+
+
+
+
+
+
 void main_menu()
 {
     cout << "\nHospital Management System\n";
@@ -768,6 +924,7 @@ void handle()
     int choice;
     patient p;
     doctor d;
+    appointments a;
     while (true)
     {
         clearScreen();
@@ -781,6 +938,9 @@ void handle()
             break;
         case 2:
             d.displayDoctorsOperations();
+            break;
+        case 3:
+            a.displayAppointmentsOperations();
             break;
         case 0:
             cout << "Exiting the system..." << endl;
