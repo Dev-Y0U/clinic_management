@@ -354,6 +354,34 @@ public:
         return 0;
     }
 
+    int searchFromPatient(){
+        sqlite3 *DB;
+        char *errMsg = 0;
+        int response = sqlite3_open("hospital.db", &DB);
+
+        if (response)
+        {
+            cerr << "Error open DB " << sqlite3_errmsg(DB) << endl;
+            return -1;
+        }
+
+        int patientID;
+        cout << "Enter PatientID for searching to Patient table: ";
+        cin >> patientID;
+        cin.ignore();
+        cout << "\n";
+        string query = "SELECT * FROM Patients WHERE PatientID  = " + to_string(patientID) + ";";
+
+        response = sqlite3_exec(DB, query.c_str(), print::callback, 0, &errMsg);
+        if (response != SQLITE_OK)
+        {
+            cerr << "Error Select Patients Table: " << errMsg << endl;
+            sqlite3_free(errMsg);
+            sqlite3_close(DB);
+            return -1;
+        }
+    }
+
     void displayPatientOperations()
     {
         int choice;
@@ -366,6 +394,7 @@ public:
             cout << "2. Print Patients\n\n";
             cout << "3. Delete Patient\n\n";
             cout << "4. Update Patient\n\n";
+            cout << "5. search Patient\n\n";
             cout << "0. Return to Main Menu\n\n";
             cout << "Enter Your Choice: ";
             cin >> choice;
@@ -394,6 +423,12 @@ public:
             case 4:
                 clearScreen();
                 editPatient();
+                cout << "\n\n";
+                pauseProgram();
+                break;
+            case 5:
+                clearScreen();
+                searchFromPatient();
                 cout << "\n\n";
                 pauseProgram();
                 break;
@@ -827,14 +862,69 @@ public:
             return -1;
         }
 
+
         sqlite3_close(DB);
         return 0;
     }
-/*
-    int deleteAppointmentsData(AppointmentsID){
 
+    int deleteAppointmentsData(int AppointmentsID){
+        sqlite3 *DB;
+        char *errMsg = 0;
+        int response = sqlite3_open("hospital.db", &DB);
+
+        if (response)
+        {
+            cerr << "Error open DB " << sqlite3_errmsg(DB) << endl;
+            return -1;
+        }
+
+        string query = "DELETE FROM Payments WHERE AppointmentID = " + to_string(AppointmentsID) + ";";
+        response = sqlite3_exec(DB, query.c_str(), NULL, 0, &errMsg);
+        if (response != SQLITE_OK)
+        {
+            cerr << "Error Delete from Payments Table: " << errMsg << endl;
+            sqlite3_free(errMsg);
+            sqlite3_close(DB);
+            return -1;
+        }
+
+        query = "DELETE FROM MedicalRecords WHERE AppointmentID = " + to_string(AppointmentsID) + ";";
+        response = sqlite3_exec(DB, query.c_str(), NULL, 0, &errMsg);
+        if (response != SQLITE_OK)
+        {
+            cerr << "Error Delete from MedicalRecords Table: " << errMsg << endl;
+            sqlite3_free(errMsg);
+            sqlite3_close(DB);
+            return -1;
+        }
+
+        query = "DELETE FROM Appointments WHERE AppointmentID = " + to_string(AppointmentsID) + ";";
+        response = sqlite3_exec(DB, query.c_str(), NULL, 0, &errMsg);
+        if (response != SQLITE_OK)
+        {
+            cerr << "Error Delete from Appointments Table: " << errMsg << endl;
+            sqlite3_free(errMsg);
+            sqlite3_close(DB);
+            return -1;
+        }
+
+        query = "DELETE FROM Patients WHERE AppointmentID = " + to_string(AppointmentsID) + ";";
+        response = sqlite3_exec(DB, query.c_str(), NULL, 0, &errMsg);
+        if (response != SQLITE_OK)
+        {
+            cerr << "Error Delete from Patients Table: " << errMsg << endl;
+            sqlite3_free(errMsg);
+            sqlite3_close(DB);
+            return -1;
+        }
+
+        sqlite3_close(DB);
+        return 0;
     }
-*/
+
+
+
+
     int editAppointments(){
 
     }
@@ -872,7 +962,7 @@ public:
                 clearScreen();
                 cout << "Enter Appointments ID to Delete: ";
                 cin >> AppointmentsID;
-                //deleteAppointmentsData(AppointmentsID);
+                deleteAppointmentsData(AppointmentsID);
                 cout << "Appointment deleted successfully.\n\n";
                 pauseProgram();
                 break;
